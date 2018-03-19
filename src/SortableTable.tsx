@@ -30,14 +30,33 @@ class SortableTable extends React.Component<{}, {tableData: TData }> {
                     label: 'col 4'
                 }],
                 entries: [
-                    { col1: 'row 1 col 1', col2: 'row 1 col 2', col3: 'row 1 col 3', col4: 'row 1 col 4' },
-                    { col1: 'row 2 col 1', col2: 'row 2 col 2', col3: 'row 2 col 3', col4: 'row 2 col 4' },
+                    { col1: 'row 1 col 1', col2: 'row 1 col 2', col3: 'row 1 col 3', col4: 'dog' },
+                    { col1: 'row 2 col 1', col2: 'row 2 col 2', col3: 'row 2 col 3', col4: 'cat' },
                     { col1: 'row 3 col 1', col2: 'row 3 col 2', col3: 'row 3 col 3', col4: 'row 3 col 4' },
                     { col1: 'row 4 col 1', col2: 'row 4 col 2', col3: 'row 4 col 3', col4: 'row 4 col 4' }
                 ]
             }
         };
     }
+
+    handleSort(e: React.MouseEvent<HTMLTableHeaderCellElement>, key: string) {
+        const entries = this.state.tableData.entries.sort((a, b) => this.sortBy(a, b, key));
+        this.setState({tableData: {
+            tHeadData: this.state.tableData.tHeadData,
+            entries: entries
+        }});
+    }
+
+    private sortBy(a: {}, b: {}, key: string) {
+        if (a[key] > b[key]) {
+            return 1;
+        } else if (a[key] < b[key]) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+
     render() {
         return (
             <table className="Sortable-table">
@@ -45,7 +64,11 @@ class SortableTable extends React.Component<{}, {tableData: TData }> {
                     <tr>
                         {
                             this.state.tableData.tHeadData.map(thead => {
-                                return <th key={thead.key}>{thead.label}</th>;
+                                return (
+                                    <th key={thead.key} onClick={(e) => this.handleSort(e, thead.key)}>
+                                        {thead.label}
+                                    </th>
+                                );
                             })
                         }
                     </tr>
